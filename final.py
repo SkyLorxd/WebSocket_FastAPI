@@ -4,11 +4,11 @@ import ast
 
 
 async def json_to_text(websocket):
-    async for message in websocket:
-        # data = ast.literal_eval(await websocket.recv())  # {"first_name": "Pavel", "second_name": "Dolgy", "age": 18}
-        await websocket.send(f"Your name is {ast.literal_eval(message)['name']}")
-        await websocket.send(f"Your surname is {ast.literal_eval(message)['surname']}")
-        # await websocket.send(f"Your age is {ast.literal_eval(message)['age']}")
+    while True:
+        input_data = ast.literal_eval(await websocket.recv())
+        await websocket.send(f"Your name is {input_data['name']}")
+        await websocket.send(f"Your surname is {input_data['surname']}")
+        await websocket.send(f"Your age is {input_data['age']}")
 
 
 async def main():

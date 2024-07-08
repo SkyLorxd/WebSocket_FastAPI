@@ -1,10 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from fastapi.websockets import WebSocket
-from fastapi.encoders import jsonable_encoder
-import asyncio
 import websockets
-import json
 
 
 app = FastAPI()
@@ -27,25 +24,10 @@ async def websocket_endpoint(websocket: WebSocket):
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
-        undefined_data = await websocket.receive()  # {"first_name": "Pavel", "second_name": "Dolgy", "age": 18}
-        if isinstance(undefined_data, dict):
-        # await websocket.send_text(undefined_data)
-            uri = "ws://localhost:8765"
-            async with websockets.connect(uri) as websocket_1:
-                await websocket_1.send(str(undefined_data))
-                data = await websocket_1.recv()
-                await websocket.send(data)
-
-        # await websocket.send_text(f"Your name is {data['name']}")
-        # await websocket.send_text(f"Your surname is {data['surname']}")
-        # await websocket.send_text(f"Your age is {data['age']}")
-
-
-# async def send_txt():
-#      uri = "ws://localhost:8765"
-#      async with websockets.connect(uri) as websocket:
-#          await websocket.send("text")
-#          await websocket.recv()
-
-
-# asyncio.get_event_loop().run_until_complete(send_txt())
+        input_data = await websocket.receive_json()  # {"first_name": "Pavel", "second_name": "Dolgy", "age": 18}
+        uri = "ws://localhost:8765"
+        async with websockets.connect(uri) as intermediate_websocket:
+            await intermediate_websocket.send(str(input_data))
+            for i in range(3):
+                received_data = await intermediate_websocket.recv()
+                await websocket.send_text(f"Finally received: {str(received_data)}")
