@@ -3,7 +3,6 @@ from fastapi.responses import PlainTextResponse
 from fastapi.websockets import WebSocket
 import websockets
 
-
 app = FastAPI()
 
 
@@ -20,14 +19,14 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.send_text(f"Your message: {data}")
 
 
-@app.websocket("/info")
+@app.websocket("/info")  # main FastAPI servers route
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
-        input_data = await websocket.receive_json()  # {"first_name": "Pavel", "second_name": "Dolgy", "age": 18}
+        input_data = await websocket.receive_json()  # {"name": "Pavel", "surname": "Dolgy", "age": 18}
         uri = "ws://localhost:8765"
         async with websockets.connect(uri) as intermediate_websocket:
             await intermediate_websocket.send(str(input_data))
             for i in range(3):
                 received_data = await intermediate_websocket.recv()
-                await websocket.send_text(f"Finally received: {str(received_data)}")
+                await websocket.send_text(str(received_data))

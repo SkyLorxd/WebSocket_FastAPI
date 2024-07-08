@@ -10,7 +10,7 @@ async def send_forward(websocket):
             target_websocket.send(str(input_data))
             for i in range(3):
                 received_data = target_websocket.recv()
-                await websocket.send(f"Received: {received_data}")
+                await websocket.send(received_data)
 
 
 async def main():

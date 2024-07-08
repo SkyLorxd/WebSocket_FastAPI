@@ -8,7 +8,7 @@ async def json_to_text(websocket):
         input_data = ast.literal_eval(await websocket.recv())
         await websocket.send(f"Your name is {input_data['name']}")
         await websocket.send(f"Your surname is {input_data['surname']}")
-        await websocket.send(f"Your age is {input_data['age']}")
+        await websocket.send(f"You are {input_data['age']} years old")
 
 
 async def main():
