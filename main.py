@@ -1,32 +1,22 @@
-from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
+from fastapi import FastAPI, WebSocketDisconnect
 from fastapi.websockets import WebSocket
-import websockets
+from websocket import create_connection
+import json
+
 
 app = FastAPI()
 
 
-@app.get("/")
-def get_root():
-    return PlainTextResponse("Hello world")
-
-
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        data = await websocket.receive_text()
-        await websocket.send_text(f"Your message: {data}")
-
-
-@app.websocket("/info")  # main FastAPI servers route
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        input_data = await websocket.receive_json()  # {"name": "Pavel", "surname": "Dolgy", "age": 18}
-        uri = "ws://localhost:8765"
-        async with websockets.connect(uri) as intermediate_websocket:
-            await intermediate_websocket.send(str(input_data))
+@app.websocket("/")  # main FastAPI servers route
+async def websocket_endpoint(current_websocket: WebSocket):
+    await current_websocket.accept()
+    intermediate_websocket = create_connection("ws://127.0.0.1:2000/")
+    try:
+        while True:
+            input_data = await current_websocket.receive_json()  # {"name": "Pavel", "surname": "Dolgy", "age": 18}
+            intermediate_websocket.send(json.dumps(input_data))
             for i in range(3):
-                received_data = await intermediate_websocket.recv()
-                await websocket.send_text(str(received_data))
+                received_data = intermediate_websocket.recv()
+                await current_websocket.send_text(received_data)
+    except WebSocketDisconnect:
+        print("WebSocket disconnected")

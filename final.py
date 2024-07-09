@@ -1,20 +1,18 @@
-import asyncio
-import websockets
-import ast
+from fastapi import FastAPI, WebSocketDisconnect
+from fastapi.websockets import WebSocket
 
 
-async def json_to_text(websocket):
-    while True:
-        input_data = ast.literal_eval(await websocket.recv())
-        await websocket.send(f"Your name is {input_data['name']}")
-        await websocket.send(f"Your surname is {input_data['surname']}")
-        await websocket.send(f"You are {input_data['age']} years old")
+app = FastAPI()
 
 
-async def main():
-    async with websockets.serve(json_to_text, "localhost", 8767):
-        await asyncio.Future()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+@app.websocket("/")  # final FastAPI server route
+async def json_to_text(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            input_data = await websocket.receive_json()
+            await websocket.send_text(f"Your name is {input_data['name']}")
+            await websocket.send_text(f"Your surname is {input_data['surname']}")
+            await websocket.send_text(f"You are {input_data['age']} years old")
+    except WebSocketDisconnect:
+        print("WebSocket disconnected")
