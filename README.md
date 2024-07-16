@@ -1,6 +1,7 @@
 # Test of websocket connections to FastAPI server #
 This project is my first try to work with WebSocket protocol. My target was to study differnt libs and gain new experience, so this project is quite simple.
 
+
 # Files:
 + clien.py - clien based on aiohttp lib
 + main.py - primary websocket
@@ -33,6 +34,7 @@ A FastAPI echo serevr that receives a JSON file. After sends it back without any
 
 # testt.py 
 File with some sketches that were used during my educational process
+
 
 # Used libs:
 + websockets - lib to create a simple websocket client/server
