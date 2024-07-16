@@ -31,6 +31,9 @@ A FastAPI server that receives JSON file. After it handels file and sends back 3
 # final_json.py 
 A FastAPI echo serevr that receives a JSON file. After sends it back without any changes 
 
+# testt.py 
+File with some sketches that were used during my educational process
+
 # Used libs:
 + websockets - lib to create a simple websocket client/server
 + aiohttp - lib to create websocket-connections via client session
