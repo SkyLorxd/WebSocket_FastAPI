@@ -1,4 +1,5 @@
 # Test of websocket connections to FastAPI server #
+This project is my first try to work with WebSocket protocol. My target was to study differnt libs and gain new experience, so this project is quite simple.
 
 # files:
 + clien.py - clien based on aiohttp lib
