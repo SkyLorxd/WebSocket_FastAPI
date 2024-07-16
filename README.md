@@ -1,4 +1,4 @@
-A combination of three serveres
+## Websocket connection to fastAPI server ##
 
 First FastAPI server(main.py) receives JSON and sends it to intermediate websocket server(intermediate.py)
 Intermediate websocket server sends it to final websocket server(final.py) 
