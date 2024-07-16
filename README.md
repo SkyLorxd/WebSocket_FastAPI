@@ -9,11 +9,12 @@
 
 # client.py 
 Sends a JSON in format:
-```{
+```json
+{
     "name": "Pavel",
     "surname": "Dolgy",
     "age": 18
-    }
+}
 ```
 After recieves back messages of any type
 
