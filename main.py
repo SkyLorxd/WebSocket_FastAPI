@@ -1,22 +1,17 @@
-from fastapi import FastAPI, WebSocketDisconnect
-from fastapi.websockets import WebSocket
-from websocket import create_connection
-import json
+import asyncio
+import websockets
 
 
-app = FastAPI()
+async def receive_send(websocket):
+    async for message in websocket:
+        async with websockets.connect('ws://localhost:2000') as target_websocket:
+            await target_websocket.send(message)
+            async for response in target_websocket:
+                await websocket.send(response)
 
 
-@app.websocket("/")  # main FastAPI servers route
-async def websocket_endpoint(current_websocket: WebSocket):
-    await current_websocket.accept()
-    intermediate_websocket = create_connection("ws://127.0.0.1:2000/")
-    try:
-        while True:
-            input_data = await current_websocket.receive_json()  # {"name": "Pavel", "surname": "Dolgy", "age": 18}
-            intermediate_websocket.send(json.dumps(input_data))
-            for i in range(3):
-                received_data = intermediate_websocket.recv()
-                await current_websocket.send_text(received_data)
-    except WebSocketDisconnect:
-        print("WebSocket disconnected")
+async def main():
+    server = await websockets.serve(receive_send, "localhost", 1000)
+    await server.wait_closed()
+
+asyncio.run(main())
